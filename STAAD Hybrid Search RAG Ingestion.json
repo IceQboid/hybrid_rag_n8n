@@ -66,7 +66,7 @@
           "parameters": [
             {
               "name": "X-OPENAI-KEY",
-              "value": "=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"
+              "value": "openaikey_insert"
             }
           ]
         },
@@ -205,7 +205,7 @@
           "parameters": [
             {
               "name": "X-OPENAI-KEY",
-              "value": "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"
+              "value": "openaikey_insert"
             }
           ]
         },
