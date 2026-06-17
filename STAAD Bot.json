@@ -1,0 +1,76 @@
+{
+  "name": "STAAD Bot",
+  "nodes": [
+    {
+      "parameters": {
+        "formTitle": "Upload File(s)",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "QRF",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "STAAD Input",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            },
+            {
+              "fieldLabel": "STAAD Output",
+              "fieldType": "file",
+              "multipleFiles": false,
+              "requiredField": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.3,
+      "position": [
+        -304,
+        -112
+      ],
+      "id": "b845a89a-088c-4266-887f-86eaafd40df2",
+      "name": "On form submission",
+      "webhookId": "5c19aac0-28d9-4e22-8adf-c9b494ef9b25"
+    },
+    {
+      "parameters": {
+        "content": "## ANL IS THE OUTPUT FILE \n## STD IS THE INPUT FILE \n---\n\n## QRF IS THE INPUT FILE ",
+        "height": 192,
+        "width": 576
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1120,
+        -144
+      ],
+      "typeVersion": 1,
+      "id": "61ace9b1-bc39-4759-ad70-9d4e19379b43",
+      "name": "Sticky Note"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "On form submission": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e10cc2f7-add7-4b5d-92cf-121a67c4161d",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d4b4d0eabe8fbefe07fcc9e93ff80219687990c826ebade8f76e4e6de90b238e"
+  },
+  "id": "bMp5BVrcFUXy9u2K",
+  "tags": []
+}

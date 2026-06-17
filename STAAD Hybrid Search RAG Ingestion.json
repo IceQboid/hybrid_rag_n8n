@@ -1,0 +1,1949 @@
+{
+  "name": "STAAD Hybrid Search RAG Ingestion",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        2720,
+        96
+      ],
+      "id": "c3beddad-7f3c-4a24-baa6-b33acfdd5b49",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "What is the recommended building length and width for a steel structure storage unit",
+        "options": {
+          "systemMessage": "Search vector store and give answers strictly"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        1728,
+        832
+      ],
+      "id": "debb2f3a-ecb2-48a8-8366-072e3c3d4901",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {
+          "temperature": 0
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1728,
+        1024
+      ],
+      "id": "83cf749b-9284-4623-b6a4-13711a855e87",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://neuzewocxsenavkrcwjc.supabase.co/functions/v1/hybrid_search_staad_trigger",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-OPENAI-KEY",
+              "value": "=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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "search for staad documents"
+            }
+          ]
+        },
+        "options": {
+          "redirect": {
+            "redirect": {}
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        2704,
+        624
+      ],
+      "id": "5a09eb9f-9289-401f-a80c-5cbc7a64779f",
+      "name": "hybrid_search",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        },
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "61d66277-6905-4b92-a820-138daec8435d",
+              "name": "data",
+              "value": "this is a test text",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        2720,
+        784
+      ],
+      "id": "c4efd7cc-30ce-42c9-9c2a-4222640b332f",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "staad_help",
+          "mode": "list",
+          "cachedResultName": "staad_help"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        2992,
+        784
+      ],
+      "id": "40b11005-fd23-4bbc-aa6c-1af327cc41ce",
+      "name": "Supabase Vector Store2",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        2960,
+        976
+      ],
+      "id": "0e206b97-42a4-433b-87bf-2eef4a654ad3",
+      "name": "Embeddings OpenAI3",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "type",
+                "value": "Staad help document"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        3168,
+        1008
+      ],
+      "id": "518ea031-436f-46c4-a811-dc9c27a8feef",
+      "name": "Default Data Loader1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://neuzewocxsenavkrcwjc.supabase.co/functions/v1/hybrid_search_staad_trigger",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "X-OPENAI-KEY",
+              "value": "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"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "query",
+              "value": "={{ $fromAI('parameters0_Value', ``, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.3,
+      "position": [
+        1872,
+        1152
+      ],
+      "id": "d8a93112-3b2c-4863-b0fb-1d19feebfd05",
+      "name": "vector_store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://s3.diyprefab.com/zamil-manuals/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "list-type",
+              "value": "2"
+            },
+            {
+              "name": "prefix",
+              "value": "=bentley-help/STAAD.Pro 2025/Help/topics"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3104,
+        96
+      ],
+      "id": "25cbf14b-68e6-437a-8f84-47d616a0ef9f",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        3504,
+        96
+      ],
+      "id": "c1077437-6c7b-46be-9434-92485dbdeef4",
+      "name": "XML1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8518d356-ec04-4076-b656-5134c0222fd8",
+              "leftValue": "={{ $json.ListBucketResult.IsTruncated }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4048,
+        96
+      ],
+      "id": "f7be0b84-a01b-40f4-8f86-40d306a48306",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Contents",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "Key",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        4896,
+        80
+      ],
+      "id": "24c6e40f-1308-4001-a682-7d503fa9771a",
+      "name": "Split Out1"
+    },
+    {
+      "parameters": {
+        "bucketName": "zamil-manuals",
+        "fileKey": "={{ $json.Contents.Key }}"
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        5424,
+        368
+      ],
+      "id": "c792de43-09ff-434e-830f-90c89a1e69df",
+      "name": "Download a file1",
+      "credentials": {
+        "s3": {
+          "id": "neYGbpSsy4gyqNmf",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        5152,
+        80
+      ],
+      "id": "88c08f37-2d84-4f31-8a83-d9697d64b224",
+      "name": "Loop Over Items3"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "body",
+              "cssSelector": "html",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        5984,
+        368
+      ],
+      "id": "243550b8-298a-4079-8ca9-5c60e9672e8b",
+      "name": "HTML"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.body }}",
+        "options": {
+          "ignore": "",
+          "useLinkReferenceDefinitions": true
+        }
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        6256,
+        368
+      ],
+      "id": "df33b552-3ec1-4b9d-a29c-4051cdc887aa",
+      "name": "Markdown"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const md =\n  $json.data ||\n  $json.content ||\n  $json.text ||\n  $json.markdown ||\n  \"\";\n\nconst lines = md.split('\\n');\n\nconst headings = [];\nconst textParts = [];\n\nlet buffer = [];\n\nfor (const line of lines) {\n  // Skip reference-style links\n  if (/^\\s*\\[\\d+\\]:\\s+/.test(line)) continue;\n\n  const headingMatch = line.match(/^(#{1,4})\\s+(.*)/);\n\n  if (headingMatch) {\n    // Save accumulated text before new heading\n    if (buffer.length > 0) {\n      textParts.push(removeUrls(buffer.join(' ')));\n      buffer = [];\n    }\n\n    headings.push(headingMatch[2].trim());\n  } else {\n    if (line.trim()) buffer.push(line.trim());\n  }\n}\n\n// Push remaining text\nif (buffer.length > 0) {\n  textParts.push(removeUrls(buffer.join(' ')));\n}\n\n// Final combined values\nconst finalText = textParts.join(' ');\nconst finalHeadings = headings.join(', ');\n\n// ✅ ONE object, exactly as requested\nreturn {\n  json: {\n    section_name: $('section_name').first().json.section_name,\n    headings: finalHeadings,\n    text: finalText\n  }\n};\n\n\n// -------- helpers --------\nfunction removeUrls(text) {\n  return text\n    .replace(/^\\s*\\[\\d+\\]:\\s+.+$/gm, '')\n    .replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1')\n    .replace(/\\[([^\\]]+)\\]\\[\\d+\\]/g, '$1')\n    .replace(/https?:\\/\\/\\S+/g, '')\n    .replace(/www\\.\\S+/g, '')\n    .replace(/\\s{2,}/g, ' ')\n    .trim();\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        6496,
+        368
+      ],
+      "id": "2f827145-6b2d-41bd-a1c8-f69e08439caa",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "staad_help",
+          "mode": "list",
+          "cachedResultName": "staad_help"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        6736,
+        368
+      ],
+      "id": "14f1cbe4-d3b6-4fd0-ab04-30c3930f673d",
+      "name": "Supabase Vector Store1",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('Code in JavaScript').item.json.text }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "heading",
+                "value": "={{ $('Code in JavaScript').item.json.headings }}"
+              },
+              {
+                "name": "=section_name",
+                "value": "={{ $('Code in JavaScript').item.json.section_name }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        6832,
+        608
+      ],
+      "id": "7f7cc760-ca5e-4cc2-8ac9-b7155d158967",
+      "name": "Default Data Loader2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        6656,
+        608
+      ],
+      "id": "99c6d77c-ac46-48ff-a73d-a9494b122dfe",
+      "name": "Embeddings OpenAI1",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e120595-c48c-422c-9845-982fbacfd8fd",
+              "name": "data",
+              "value": "data",
+              "type": "binary"
+            },
+            {
+              "id": "68b47ce6-e26e-4a19-8b7b-cec60bd193fb",
+              "name": "section_name",
+              "value": "={{ $json.Contents.Key.replace(/.*topics\\//, '').replaceAll('_', \" \").replaceAll('.html', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "50863e0c-224e-455e-974a-e58102baa1bf",
+              "name": "Contents.Key",
+              "value": "={{ $json.Contents.Key }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5712,
+        368
+      ],
+      "id": "f6fb07be-764b-4da2-8c4f-0543fc09c69f",
+      "name": "section_name"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        6832,
+        752
+      ],
+      "id": "11f04bf4-e8bf-4757-83c1-daa8234b919b",
+      "name": "Recursive Character Text Splitter1"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        7088,
+        368
+      ],
+      "id": "19b12039-22a8-4f73-ab00-574fc79ada4e",
+      "name": "Wait",
+      "webhookId": "336f6cb5-6137-4e82-8a89-ad1891a9ea22"
+    },
+    {
+      "parameters": {
+        "url": "https://s3.diyprefab.com/zamil-manuals/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "list-type",
+              "value": "2"
+            },
+            {
+              "name": "prefix",
+              "value": "=bentley-help/STAAD.Pro 2025/Help/topics"
+            },
+            {
+              "name": "=continuation-token",
+              "value": "={{ $('continue_token').item.json.NextContinuationToken }}"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        8080,
+        720
+      ],
+      "id": "d565f2c9-8c1c-4170-8961-ff00212a230d",
+      "name": "Next_iteration1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd013f37-ab1f-444d-a6cd-65ea1ea0edc2",
+              "name": "Contents",
+              "value": "={{ $('If1').item.json.ListBucketResult.Contents }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4592,
+        80
+      ],
+      "id": "2a88fc86-0f19-473b-b9c2-cd60b433fe0a",
+      "name": "Edit Fields2"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "697cbc44-8e52-4b9b-9727-8bc7388efd6d",
+              "name": "NextContinuationToken",
+              "value": "={{ $json.token }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6784,
+        64
+      ],
+      "id": "21a9932a-62db-4627-8fb1-fe4144e80764",
+      "name": "continue_token",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldq0hMva6Nzlv6TZ",
+          "mode": "list",
+          "cachedResultName": "token_count_hybrid_staad",
+          "cachedResultUrl": "/projects/2SOSbXkaefQPV6tY/datatables/ldq0hMva6Nzlv6TZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "condition": "lt",
+              "keyValue": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        7456,
+        64
+      ],
+      "id": "77008a00-cb4f-43c0-a596-6f83d43b83cb",
+      "name": "Delete row(s)",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldq0hMva6Nzlv6TZ",
+          "mode": "list",
+          "cachedResultName": "token_count_hybrid_staad",
+          "cachedResultUrl": "/projects/2SOSbXkaefQPV6tY/datatables/ldq0hMva6Nzlv6TZ"
+        },
+        "returnAll": true
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        5632,
+        64
+      ],
+      "id": "86d1b2ee-87e9-456d-a924-a092858b0c69",
+      "name": "Get row(s)",
+      "executeOnce": true
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldq0hMva6Nzlv6TZ",
+          "mode": "list",
+          "cachedResultName": "token_count_hybrid_staad",
+          "cachedResultUrl": "/projects/2SOSbXkaefQPV6tY/datatables/ldq0hMva6Nzlv6TZ"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "token": "={{ $json.ListBucketResult.NextContinuationToken }}",
+            "isTruncated": "={{ $json.ListBucketResult.IsTruncated }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "token",
+              "displayName": "token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "isTruncated",
+              "displayName": "isTruncated",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        4400,
+        80
+      ],
+      "id": "dd8328a7-2cac-40aa-8c4c-bcd8b0c524f5",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "Contents",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "Key",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        5616,
+        1168
+      ],
+      "id": "a4efda5b-229e-4217-aa45-b8aa5af39c27",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "bd013f37-ab1f-444d-a6cd-65ea1ea0edc2",
+              "name": "Contents",
+              "value": "={{ $('If1').item.json.ListBucketResult.Contents }}",
+              "type": "array"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        5312,
+        1168
+      ],
+      "id": "7f8d94d2-08d0-45e3-916a-ad7b338eb411",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "bucketName": "zamil-manuals",
+        "fileKey": "={{ $json.Contents.Key }}"
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        6368,
+        1456
+      ],
+      "id": "c625b462-1989-40f4-b5e8-c3ac58478137",
+      "name": "Download a file",
+      "credentials": {
+        "s3": {
+          "id": "neYGbpSsy4gyqNmf",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 100,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        6096,
+        1168
+      ],
+      "id": "cd549410-09b0-4f2a-87a6-d900e99d00cd",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "body",
+              "cssSelector": "html",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        6928,
+        1456
+      ],
+      "id": "8c376d48-e2eb-485c-b22a-d3f60dec1ce8",
+      "name": "HTML1"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.body }}",
+        "options": {
+          "ignore": "",
+          "useLinkReferenceDefinitions": true
+        }
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        7200,
+        1456
+      ],
+      "id": "ee7ccee1-942c-4ca4-8071-c26fb61a8b24",
+      "name": "Markdown1"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const md =\n  $json.data ||\n  $json.content ||\n  $json.text ||\n  $json.markdown ||\n  \"\";\n\nconst lines = md.split('\\n');\n\nconst headings = [];\nconst textParts = [];\n\nlet buffer = [];\n\nfor (const line of lines) {\n  // Skip reference-style links\n  if (/^\\s*\\[\\d+\\]:\\s+/.test(line)) continue;\n\n  const headingMatch = line.match(/^(#{1,4})\\s+(.*)/);\n\n  if (headingMatch) {\n    // Save accumulated text before new heading\n    if (buffer.length > 0) {\n      textParts.push(removeUrls(buffer.join(' ')));\n      buffer = [];\n    }\n\n    headings.push(headingMatch[2].trim());\n  } else {\n    if (line.trim()) buffer.push(line.trim());\n  }\n}\n\n// Push remaining text\nif (buffer.length > 0) {\n  textParts.push(removeUrls(buffer.join(' ')));\n}\n\n// Final combined values\nconst finalText = textParts.join(' ');\nconst finalHeadings = headings.join(', ');\n\n// ✅ ONE object, exactly as requested\nreturn {\n  json: {\n    section_name: $('section_name1').first().json.section_name,\n    headings: finalHeadings,\n    text: finalText\n  }\n};\n\n\n// -------- helpers --------\nfunction removeUrls(text) {\n  return text\n    .replace(/^\\s*\\[\\d+\\]:\\s+.+$/gm, '')\n    .replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1')\n    .replace(/\\[([^\\]]+)\\]\\[\\d+\\]/g, '$1')\n    .replace(/https?:\\/\\/\\S+/g, '')\n    .replace(/www\\.\\S+/g, '')\n    .replace(/\\s{2,}/g, ' ')\n    .trim();\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        7440,
+        1456
+      ],
+      "id": "c075b159-5056-430d-a718-87da95ab4bcf",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "staad_help",
+          "mode": "list",
+          "cachedResultName": "staad_help"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        7680,
+        1456
+      ],
+      "id": "27772bb2-1f4f-46b0-bb10-c8a407baa058",
+      "name": "Supabase Vector Store",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('Code in JavaScript1').item.json.text }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "heading",
+                "value": "={{ $('Code in JavaScript1').item.json.headings }}"
+              },
+              {
+                "name": "=section_name",
+                "value": "={{ $('Code in JavaScript1').item.json.section_name }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        7776,
+        1696
+      ],
+      "id": "a0eeb9cc-f26b-48b8-9f4c-2783c9ff8c35",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        7600,
+        1696
+      ],
+      "id": "013aecbd-b1ca-4c55-ac67-d04dd3725ab5",
+      "name": "Embeddings OpenAI",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e120595-c48c-422c-9845-982fbacfd8fd",
+              "name": "data",
+              "value": "data",
+              "type": "binary"
+            },
+            {
+              "id": "68b47ce6-e26e-4a19-8b7b-cec60bd193fb",
+              "name": "section_name",
+              "value": "={{ $json.Contents.Key.replace(/.*topics\\//, '').replaceAll('_', \" \").replaceAll('.html', '') }}",
+              "type": "string"
+            },
+            {
+              "id": "50863e0c-224e-455e-974a-e58102baa1bf",
+              "name": "Contents.Key",
+              "value": "={{ $json.Contents.Key }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        6656,
+        1456
+      ],
+      "id": "a360082f-00b4-42c0-9128-ef2ec3a724dc",
+      "name": "section_name1"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        7776,
+        1840
+      ],
+      "id": "a11dc5f3-f629-49c5-b99a-38912c5909d1",
+      "name": "Recursive Character Text Splitter"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        8032,
+        1456
+      ],
+      "id": "430e4806-2c95-4e31-badc-19ca716fdd9a",
+      "name": "Wait1",
+      "webhookId": "336f6cb5-6137-4e82-8a89-ad1891a9ea22"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "ldq0hMva6Nzlv6TZ",
+          "mode": "list",
+          "cachedResultName": "token_count_hybrid_staad",
+          "cachedResultUrl": "/projects/2SOSbXkaefQPV6tY/datatables/ldq0hMva6Nzlv6TZ"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "condition": "lt",
+              "keyValue": "50"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1,
+      "position": [
+        7920,
+        128
+      ],
+      "id": "af00b323-1a57-47d9-8260-a9d46b44ab7b",
+      "name": "Delete row(s)1",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "url": "https://s3.diyprefab.com/zamil-manuals/",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "list-type",
+              "value": "2"
+            },
+            {
+              "name": "prefix",
+              "value": "=bentley-help/STAAD.Pro 2025/Help/topics/Verification/"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        3376,
+        -1520
+      ],
+      "id": "bb331bc2-e246-41e3-86f7-8d17c5d23ead",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.xml",
+      "typeVersion": 1,
+      "position": [
+        3616,
+        -1520
+      ],
+      "id": "0f62c613-debb-424a-a76b-dcc723617b4c",
+      "name": "XML"
+    },
+    {
+      "parameters": {
+        "content": "## Manual Folder by Folder\n",
+        "height": 80,
+        "width": 336
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        2672,
+        -1504
+      ],
+      "typeVersion": 1,
+      "id": "748422f3-03d2-4139-9797-dfa473c08532",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "ListBucketResult.Contents",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "Key",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        3856,
+        -1520
+      ],
+      "id": "8564364f-be6a-47d8-bf36-05f8be10d95d",
+      "name": "Split Out2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        4128,
+        -1520
+      ],
+      "id": "5c5852be-bce1-4e6e-aa11-1bb4de22c5b3",
+      "name": "Loop Over Items4"
+    },
+    {
+      "parameters": {
+        "bucketName": "zamil-manuals",
+        "fileKey": "={{ $json['ListBucketResult.Contents'].Key }}"
+      },
+      "type": "n8n-nodes-base.s3",
+      "typeVersion": 1,
+      "position": [
+        4368,
+        -1504
+      ],
+      "id": "2db6449d-2ccc-4b2b-bc75-a0249dbc142b",
+      "name": "Download a file2",
+      "credentials": {
+        "s3": {
+          "id": "neYGbpSsy4gyqNmf",
+          "name": "S3 account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "extractHtmlContent",
+        "sourceData": "binary",
+        "extractionValues": {
+          "values": [
+            {
+              "key": "body",
+              "cssSelector": "html",
+              "returnValue": "html"
+            }
+          ]
+        },
+        "options": {
+          "trimValues": true,
+          "cleanUpText": true
+        }
+      },
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1.2,
+      "position": [
+        4928,
+        -1504
+      ],
+      "id": "65e0ed7a-a11d-407f-a68c-c242f3661a24",
+      "name": "HTML2"
+    },
+    {
+      "parameters": {
+        "html": "={{ $json.body }}",
+        "options": {
+          "ignore": "",
+          "useLinkReferenceDefinitions": true
+        }
+      },
+      "type": "n8n-nodes-base.markdown",
+      "typeVersion": 1,
+      "position": [
+        5200,
+        -1504
+      ],
+      "id": "895174f1-498a-4d9e-afb3-097cba0604fe",
+      "name": "Markdown2"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const md =\n  $json.data ||\n  $json.content ||\n  $json.text ||\n  $json.markdown ||\n  \"\";\n\nconst lines = md.split('\\n');\n\nconst headings = [];\nconst textParts = [];\n\nlet buffer = [];\n\nfor (const line of lines) {\n  // Skip reference-style links\n  if (/^\\s*\\[\\d+\\]:\\s+/.test(line)) continue;\n\n  const headingMatch = line.match(/^(#{1,4})\\s+(.*)/);\n\n  if (headingMatch) {\n    // Save accumulated text before new heading\n    if (buffer.length > 0) {\n      textParts.push(removeUrls(buffer.join(' ')));\n      buffer = [];\n    }\n\n    headings.push(headingMatch[2].trim());\n  } else {\n    if (line.trim()) buffer.push(line.trim());\n  }\n}\n\n// Push remaining text\nif (buffer.length > 0) {\n  textParts.push(removeUrls(buffer.join(' ')));\n}\n\n// Final combined values\nconst finalText = textParts.join(' ');\nconst finalHeadings = headings.join(', ');\n\n// ✅ ONE object, exactly as requested\nreturn {\n  json: {\n    section_name: $('section_name2').first().json.section_name,\n    headings: finalHeadings,\n    text: finalText\n  }\n};\n\n\n// -------- helpers --------\nfunction removeUrls(text) {\n  return text\n    .replace(/^\\s*\\[\\d+\\]:\\s+.+$/gm, '')\n    .replace(/\\[([^\\]]+)\\]\\([^)]+\\)/g, '$1')\n    .replace(/\\[([^\\]]+)\\]\\[\\d+\\]/g, '$1')\n    .replace(/https?:\\/\\/\\S+/g, '')\n    .replace(/www\\.\\S+/g, '')\n    .replace(/\\s{2,}/g, ' ')\n    .trim();\n}\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        5440,
+        -1504
+      ],
+      "id": "2abd0d67-86c6-4f6a-8eb3-919d7b4e114e",
+      "name": "Code in JavaScript2"
+    },
+    {
+      "parameters": {
+        "mode": "insert",
+        "tableName": {
+          "__rl": true,
+          "value": "staad_help",
+          "mode": "list",
+          "cachedResultName": "staad_help"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreSupabase",
+      "typeVersion": 1.3,
+      "position": [
+        5728,
+        -1504
+      ],
+      "id": "e8b025fe-999e-4f96-a2f3-61109d1e296e",
+      "name": "Supabase Vector Store3",
+      "credentials": {
+        "supabaseApi": {
+          "id": "dQjP5x9FQqFxo22C",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonMode": "expressionData",
+        "jsonData": "={{ $('Code in JavaScript2').item.json.text }}",
+        "textSplittingMode": "custom",
+        "options": {
+          "metadata": {
+            "metadataValues": [
+              {
+                "name": "headings",
+                "value": "={{ $('Code in JavaScript2').item.json.headings }}"
+              },
+              {
+                "name": "=section_name",
+                "value": "={{ $('Code in JavaScript2').item.json.section_name }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        5824,
+        -1264
+      ],
+      "id": "91c06f4b-cdca-4471-b21c-43f4fb4c6db7",
+      "name": "Default Data Loader3"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.embeddingsOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        5648,
+        -1264
+      ],
+      "id": "f36c32ea-2f3a-410b-b7dd-bc7aa4dfb6d8",
+      "name": "Embeddings OpenAI2",
+      "credentials": {
+        "openAiApi": {
+          "id": "W6MBR00alcbgJqVh",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "2e120595-c48c-422c-9845-982fbacfd8fd",
+              "name": "data",
+              "value": "data",
+              "type": "binary"
+            },
+            {
+              "id": "68b47ce6-e26e-4a19-8b7b-cec60bd193fb",
+              "name": "section_name",
+              "value": "={{ $json[\"ListBucketResult.Contents\"].Key.replace(/.*topics\\//, '').replaceAll('_', \" \").replaceAll('.html', '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        4656,
+        -1504
+      ],
+      "id": "90731830-b12e-4e4b-bc7c-ec33fd2dec57",
+      "name": "section_name2"
+    },
+    {
+      "parameters": {
+        "chunkOverlap": 200,
+        "options": {
+          "splitCode": "markdown"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterRecursiveCharacterTextSplitter",
+      "typeVersion": 1,
+      "position": [
+        5824,
+        -1056
+      ],
+      "id": "997f09d8-aedf-431c-b4cd-12990cd2dd19",
+      "name": "Recursive Character Text Splitter2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI3": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader1": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store2",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vector_store": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a file1": {
+      "main": [
+        [
+          {
+            "node": "section_name",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items3": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Download a file1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store1": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader2": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store1",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "section_name": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter1": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader2",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Next_iteration1": {
+      "main": [
+        [
+          {
+            "node": "XML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields2": {
+      "main": [
+        [
+          {
+            "node": "Split Out1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "continue_token": {
+      "main": [
+        [
+          {
+            "node": "Delete row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete row(s)": {
+      "main": [
+        [
+          {
+            "node": "Next_iteration1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "continue_token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a file": {
+      "main": [
+        [
+          {
+            "node": "section_name1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download a file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML1": {
+      "main": [
+        [
+          {
+            "node": "Markdown1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "section_name1": {
+      "main": [
+        [
+          {
+            "node": "HTML1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "XML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "XML": {
+      "main": [
+        [
+          {
+            "node": "Split Out2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out2": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download a file2": {
+      "main": [
+        [
+          {
+            "node": "section_name2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML2": {
+      "main": [
+        [
+          {
+            "node": "Markdown2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Markdown2": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript2": {
+      "main": [
+        [
+          {
+            "node": "Supabase Vector Store3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Vector Store3": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader3": {
+      "ai_document": [
+        [
+          {
+            "node": "Supabase Vector Store3",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings OpenAI2": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Supabase Vector Store3",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "section_name2": {
+      "main": [
+        [
+          {
+            "node": "HTML2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Recursive Character Text Splitter2": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader3",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items4": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Download a file2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "b1af2cd1-64ff-451f-9ce3-1265572c6d35",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d4b4d0eabe8fbefe07fcc9e93ff80219687990c826ebade8f76e4e6de90b238e"
+  },
+  "id": "aGrxpcdYLIcB7Dfw",
+  "tags": []
+}
